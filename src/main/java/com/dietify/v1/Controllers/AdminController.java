@@ -8,6 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,9 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.dietify.v1.Entity.User;
 import com.dietify.v1.Repository.UserRepo;
 import com.dietify.v1.Service.UserService;
-
-
-
 
 @Controller
 @RequestMapping("/admin")
@@ -55,23 +53,27 @@ public class AdminController {
 		userRepo.deleteById(userId);
 		return "redirect:/admin/users";
 	}
+
 	@GetMapping("/user/edit")
-	public String editEmployee(@RequestParam("id") Integer userId) {
-		userRepo.existsById(userId);
-		return "redirect:/admin/users";
-
+	public String showEditUserForm(@RequestParam("id") int userId, Model model) {
+		User user = userRepo.findById(userId).orElse(null);
+		model.addAttribute("user", user);
+		return "editusers";
 	}
-	@GetMapping("/admin/user/update")
-	public String updateUser(@RequestParam("id") Integer userId){
-		((AdminController) userRepo).updateUser(userId);
-		String existingUser = UserService(userId);
-		existingUser.setUsername(User.getUserById());
-		existingUser.setUsername(User.getUserName());
-		existingUser.setUsername(User.getUserEmail());
-		existingUser.setUsername(User.getUserRole());
-		UserService.updateUser(existingUser);
-		return "redirect:/admin/users" ;
 
+	@PostMapping("/user/update")
+	public String updateUser(@ModelAttribute("user") User updatedUser) {
+		// Perform update operation in the database
+		User existingUser = userRepo.findById(updatedUser.getId()).orElse(null);
+
+		if (existingUser != null) {
+			// Update user information
+			existingUser.setName(updatedUser.getName());
+			// Update other fields as needed
+			userRepo.save(existingUser);
+		}
+
+		return "redirect:/admin/users";
 	}
 
 }

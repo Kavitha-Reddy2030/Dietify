@@ -107,8 +107,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void getUserById(Integer userId) {
-		//return UserRepo.existsById(userId);
+	public boolean getUserById(int userId) {
+		return userRepo.existsById(userId);
 		
 	}
 

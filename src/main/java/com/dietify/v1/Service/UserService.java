@@ -9,13 +9,7 @@ public interface UserService {
 
 	public User saveUser(User user);
 
-	public void getUserById(Integer userId);
-
-	public void getUserName();
-
-	public void getUserEmail();
-
-	public void getUserRole();
+	public boolean getUserById(int userId);
 
     public void updateUser(User user);
 
